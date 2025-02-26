@@ -9,7 +9,7 @@ Check your PR to either
 - exclude files from being checked by the diff-rules
 - exclude users being allowed to break any rules
 
-This action is designed to _only_ run on PRs.
+This action is designed to _only_ run on PRs, since it scans the diff of the PR/
 
 ## Using this action
 
@@ -48,12 +48,12 @@ jobs:
           waivedUsers: ['dependabot[bot]']
 ```
 
-You might want to qualify possible events that trigger this action, for intance, this way:
+You might want to qualify possible events that trigger this action, for instance, this way:
 
 ```yaml
   pull_request:
     types:
-      [opened, edited, assigned, closed, , synchronize, review_requested, ready_for_review]
+      [opened, edited, assigned, closed, synchronize, review_requested, ready_for_review]
 ```
 
 This will skip diff checks every single push, for instance. Please remember that _this action will only work in pull

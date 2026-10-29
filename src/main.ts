@@ -48,8 +48,11 @@ export async function run(): Promise<void> {
     if (hasDiffBasedRules()) {
       const filesChanged = await fetchDiff(repository, pullRequest)
       checkMaxChangedFiles(filesChanged, Number(core.getInput('filesChanged')))
-      const excludedFiles = core.getMultilineInput('diffFilesToExclude') ?? []
-      checkPrDiff(filesChanged, core.getInput('diffContains'), core.getInput('diffDoesNotContain'), excludedFiles)
+      checkPrDiff(filesChanged, core.getInput('diffContains'), core.getInput('diffDoesNotContain'), {
+        filesToExclude: core.getMultilineInput('diffFilesToExclude') ?? [],
+        filesToInclude: core.getMultilineInput('diffFilesToInclude') ?? [],
+        ignoreComments: core.getInput('diffIgnoreComments') === 'true'
+      })
       checkMaxLinesAdded(filesChanged, Number(core.getInput('linesChanged')))
     }
   } catch (error: unknown) {

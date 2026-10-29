@@ -6,7 +6,8 @@ Check your PR to either
 - contain (or not) a string in the PR body using a regular expression
 - to not change more than X files
 - to not change more than X lines
-- exclude files from being checked by the diff-rules
+- exclude files from being checked by the diff-rules, or only check specific files (paths or globs)
+- ignore comments in the added code when checking the diff-rules
 - exclude users being allowed to break any rules
 
 This action is designed to _only_ run on PRs, since it scans the diff of the PR/
@@ -36,10 +37,15 @@ jobs:
           # PR diff is not allowed to include TODO:
           diffDoesNotContain: '.*TODO:.*'
           # Files to exclude from being checked. Use a multiline string,
-          # each line should be one filepath relative to the repository root
+          # each line should be one filepath or glob relative to the repository root
           diffFilesToExclude: |
             .github/workflows/check.yml
-            README.md
+            **/*.md
+          # Only check these files (filepaths or globs), defaults to all files
+          diffFilesToInclude: |
+            src/**
+          # Ignore C-style comments (//, /* and lines starting with *) in the added code
+          diffIgnoreComments: true
           # PR is not allowed change more than 5 files
           filesChanged: 5
           # PR is not allowed to change more than 20 lines
@@ -65,6 +71,28 @@ triggered by a `pull_request` or `pull_request_target` event.
 
 - `v1`: Initial fork with full regular expression support and project alignment
 - `v2`: Rewrite entirely for maintainability and readability. Add tests. Add ability to exclude files
+- `main`: Add `diffFilesToInclude`, glob support for `diffFilesToExclude`, `diffIgnoreComments`. Report all lines
+  violating `diffDoesNotContain` instead of only the first. Fix body checks only running when both `bodyContains` and
+  `bodyDoesNotContain` were set
+
+## Example: forbid `assert()` in Kotlin code
+
+```yaml
+name: 'Check PR for kotlin assert()'
+on: [pull_request]
+
+jobs:
+  check_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR
+        uses: EugenMayer/github-pr-contains-action@main
+        with:
+          github-token: ${{github.token}}
+          diffDoesNotContain: '\bassert\('
+          diffFilesToInclude: '**/*.kt'
+          diffIgnoreComments: true
+```
 
 ## Development
 

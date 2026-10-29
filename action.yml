@@ -19,7 +19,18 @@ inputs:
   diffDoesNotContain:
     description: 'Word that should not be contained in the added code'
   diffFilesToExclude:
-    description: 'Files to exclude from being checked. Use a multiline string, each line should be one filepath relative to the repository root'
+    description:
+      'Files to exclude from being checked. Use a multiline string, each line should be one filepath or glob (e.g.
+      **/*.md) relative to the repository root'
+  diffFilesToInclude:
+    description:
+      'Only check these files, all others are skipped. Use a multiline string, each line should be one filepath or glob
+      (e.g. **/*.kt) relative to the repository root. Defaults to all files'
+  diffIgnoreComments:
+    description:
+      'Ignore C-style comments (//, /* and lines starting with *) in the added code when checking diffContains and
+      diffDoesNotContain'
+    default: 'false'
   linesChanged:
     description: 'Max number of lines changed per PR'
   filesChanged:
@@ -28,7 +39,7 @@ inputs:
     description: 'Users that will not need to follow these guidelines. Defaults to dependabot.'
 outputs:
   diff:
-    description: 'Lines added to the PR'
+    description: 'Added lines violating diffDoesNotContain, newline separated'
 
 runs:
   using: node20

@@ -136,7 +136,10 @@ describe('kotlin assert rule', () => {
   })
 
   it('should only check included files', async () => {
-    const files = [getFile('.github/workflows/check.yml', ["diffDoesNotContain: '\\bassert\\('"]), getFile('Foo.java', ['assert(x)'])]
+    const files = [
+      getFile('.github/workflows/check.yml', ["diffDoesNotContain: '\\bassert\\('"]),
+      getFile('Foo.java', ['assert(x)'])
+    ]
     checkPrDiff(files, '', rule, options)
     expect(setFailedMock).not.toHaveBeenCalled()
   })

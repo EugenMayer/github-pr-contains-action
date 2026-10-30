@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 
 export function checkPrBody(pullRequestBody: string, bodyMustContain: string, bodyShallNotContain: string): void {
-  if (!(bodyMustContain && bodyShallNotContain)) {
+  if (!(bodyMustContain || bodyShallNotContain)) {
     // We have not been asked for body checks
     return
   }
